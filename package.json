@@ -1,0 +1,22 @@
+{
+  "name": "sol-block-derby",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/a26nine/sol-block-derby.git"
+  },
+  "author": "a26nine",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/a26nine/sol-block-derby/issues"
+  },
+  "homepage": "https://github.com/a26nine/sol-block-derby#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
