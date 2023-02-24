@@ -8,8 +8,6 @@ const isDb = true;
 
 const tableName = 'rounds' + (process.env.DB_SUFFIX || '');
 
-console.log(tableName);
-
 const pool = new Pool({
   host: process.env.PGHOST,
   database: process.env.PGDATABASE,
