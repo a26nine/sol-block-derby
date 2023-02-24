@@ -16,9 +16,6 @@
     "url": "https://github.com/a26nine/sol-block-derby/issues"
   },
   "homepage": "https://github.com/a26nine/sol-block-derby#readme",
-  "devDependencies": {
-    "nodemon": "^2.0.20"
-  },
   "dependencies": {
     "@solana/web3.js": "^1.73.3",
     "dotenv": "^16.0.3",

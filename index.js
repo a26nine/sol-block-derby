@@ -2,6 +2,10 @@ require('dotenv').config();
 const { Pool } = require('pg');
 const web3 = require('@solana/web3.js');
 
+const timeoutSeconds = 5;
+const intervalSeconds = 10;
+const isDb = true;
+
 const pool = new Pool({
   host: process.env.PGHOST,
   database: process.env.PGDATABASE,
@@ -25,8 +29,22 @@ const connections = Object.entries(providers).map(([name, endpoint]) => {
   };
 });
 
-const timeoutSeconds = 5;
-const pauseSeconds = 10;
+async function sendToDb(timestamp, results, winners) {
+  const pgClient = await pool.connect();
+  await pgClient.query(
+    'INSERT INTO rounds (timestamp, alchemy, ankr, chainstack, pokt, quicknode, winners) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+    [
+      timestamp,
+      results[0].slot,
+      results[1].slot,
+      results[2].slot,
+      results[3].slot,
+      results[4].slot,
+      winners.join(', '),
+    ]
+  );
+  pgClient.release();
+}
 
 async function checkProviderSlots() {
   const timestamp = new Date().toISOString();
@@ -48,31 +66,21 @@ async function checkProviderSlots() {
     const results = await Promise.all(requests);
     console.log('New round at', timestamp);
     results.forEach(({ name, slot }) => console.log(`${name}: ${slot}`));
-    console.log('');
 
     const highestSlot = Math.max(...results.map((res) => res.slot));
     const winners = results
       .filter(({ slot }) => slot === highestSlot)
       .map(({ name }) => name);
+    console.log(`Winner(s): ${winners.join(', ')}`);
+    console.log('');
 
-    const pgClient = await pool.connect();
-    await pgClient.query(
-      'INSERT INTO rounds (timestamp, alchemy, ankr, chainstack, pokt, quicknode, winners) VALUES ($1, $2, $3, $4, $5, $6, $7)',
-      [
-        timestamp,
-        results[0].slot,
-        results[1].slot,
-        results[2].slot,
-        results[3].slot,
-        results[4].slot,
-        winners.join(', '),
-      ]
-    );
-    pgClient.release();
+    if (isDb) {
+      sendToDb(timestamp, results, winners);
+    }
   } catch (error) {
     // console.error(error);
   } finally {
-    setTimeout(checkProviderSlots, pauseSeconds * 1000);
+    setTimeout(checkProviderSlots, intervalSeconds * 1000);
   }
 }
 
@@ -82,4 +90,9 @@ console.log(
   ▄█ █▄█ █▄▄ █▀█ █░▀█ █▀█   █▄█ █▄▄ █▄█ █▄▄ █░█   █▄▀ ██▄ █▀▄ █▄█ ░█░ 
   `
 );
+console.log(`<<< CONFIG >>>
+Timeout  ---> ${timeoutSeconds}s
+Interval ---> ${intervalSeconds}s
+`);
+
 checkProviderSlots();
