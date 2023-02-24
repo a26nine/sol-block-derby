@@ -2,8 +2,8 @@ require('dotenv').config();
 const { Pool } = require('pg');
 const web3 = require('@solana/web3.js');
 
-const timeoutSeconds = 5;
-const intervalSeconds = 10;
+const timeoutSeconds = 3;
+const intervalSeconds = 5;
 const isDb = true;
 
 const tableName = 'rounds' + (process.env.DB_SUFFIX || '');
