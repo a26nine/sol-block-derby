@@ -18,25 +18,27 @@ A script to fetch Solana blockchain's latest slot number using various blockchai
 
 ## Run
 
-Clone the project
+1. Clone the project
 
 ```bash
   git clone https://github.com/a26nine/sol-block-derby
 ```
 
-Go to the project directory
+2. Go to the project directory
 
 ```bash
   cd sol-block-derby
 ```
 
-Install dependencies
+3. Install dependencies
 
 ```bash
   npm install
 ```
 
-Start the server
+4. Set configuration and environment vairables (as shared below)
+
+5. Start the server
 
 ```bash
   npm start
@@ -47,6 +49,7 @@ Start the server
 - `timeoutSeconds` - Timeout for the RPC request
 - `intervalSeconds` - Time interval between the rounds
 - `isDb` - Setting to enable/disable the database operations
+- `tableName` - Postgres database table name
 
 ## Environment Variables
 
@@ -66,6 +69,12 @@ _If you want to push the results to a Postgres Database and if `isDb` is set to 
 - `PGPORT=`
 - `PGUSER=`
 
+_If you are running the script from multiple servers/locations and want to have individual tables_
+
+- `DB_SUFFIX=`
+
 ## Query Database
 
 You can run `winner.sql` query against the database to populate the winner.
+
+![db-schema](assets/db-schema.png)

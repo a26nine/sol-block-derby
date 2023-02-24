@@ -6,6 +6,10 @@ const timeoutSeconds = 5;
 const intervalSeconds = 10;
 const isDb = true;
 
+const tableName = 'rounds' + (process.env.DB_SUFFIX || '');
+
+console.log(tableName);
+
 const pool = new Pool({
   host: process.env.PGHOST,
   database: process.env.PGDATABASE,
@@ -32,7 +36,7 @@ const connections = Object.entries(providers).map(([name, endpoint]) => {
 async function sendToDb(timestamp, results, winners) {
   const pgClient = await pool.connect();
   await pgClient.query(
-    'INSERT INTO rounds (timestamp, alchemy, ankr, chainstack, pokt, quicknode, winners) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+    `INSERT INTO ${tableName} (timestamp, alchemy, ankr, chainstack, pokt, quicknode, winners) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
     [
       timestamp,
       results[0].slot,
@@ -93,6 +97,7 @@ console.log(
 console.log(`<<< CONFIG >>>
 Timeout  ---> ${timeoutSeconds}s
 Interval ---> ${intervalSeconds}s
+Database ---> ${isDb}
 `);
 
 checkProviderSlots();
