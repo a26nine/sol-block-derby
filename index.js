@@ -1,6 +1,17 @@
 require('dotenv').config();
+const { Pool } = require('pg');
 const web3 = require('@solana/web3.js');
 
+// Postgres DB connection
+const pool = new Pool({
+  host: process.env.PGHOST,
+  database: process.env.PGDATABASE,
+  port: process.env.PGPORT,
+  user: process.env.PGUSER,
+  password: process.env.PGPASSWORD,
+});
+
+// Node providers
 const providers = {
   Alchemy: process.env.ALCHEMY_ENDPOINT,
   Ankr: process.env.ANKR_ENDPOINT,
@@ -9,6 +20,7 @@ const providers = {
   QuickNode: process.env.QUICKNODE_ENDPOINT,
 };
 
+// Establish connections
 const connections = Object.entries(providers).map(([name, endpoint]) => {
   return {
     name,
@@ -17,9 +29,10 @@ const connections = Object.entries(providers).map(([name, endpoint]) => {
 });
 
 const timeoutSeconds = 5;
-const pauseSeconds = 15;
+const pauseSeconds = 10;
 
 async function checkProviderSlots() {
+  const timestamp = new Date().toISOString();
   try {
     const requests = connections.map(({ name, conn }) =>
       Promise.race([
@@ -36,18 +49,29 @@ async function checkProviderSlots() {
     );
 
     const results = await Promise.all(requests);
-    console.log('Results...');
+    console.log(timestamp);
     results.forEach(({ name, slot }) => console.log(`${name}: ${slot}`));
 
     const highestSlot = Math.max(...results.map((res) => res.slot));
-    const winners = results.filter(({ slot }) => slot === highestSlot);
-    console.log('Winner(s)...');
-    if (winners.length === 1) {
-      console.log(winners[0].name);
-    } else {
-      winners.forEach(({ name }) => console.log(name));
-    }
+    const winners = results
+      .filter(({ slot }) => slot === highestSlot)
+      .map(({ name }) => name);
     console.log('\n');
+
+    const pgClient = await pool.connect();
+    await client.query(
+      'INSERT INTO rounds (timestamp, alchemy, ankr, chainstack, pokt, quicknode, winners) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+      [
+        timestamp,
+        results[0].slot,
+        results[1].slot,
+        results[2].slot,
+        results[3].slot,
+        results[4].slot,
+        winners.join(', '),
+      ]
+    );
+    client.release();
   } catch (error) {
     // console.error(error);
   } finally {
