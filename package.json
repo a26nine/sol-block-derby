@@ -1,7 +1,7 @@
 {
   "name": "sol-block-derby",
   "version": "1.0.0",
-  "description": "",
+  "description": "Solana block speed comparison",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"

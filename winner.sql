@@ -4,7 +4,7 @@ SELECT
 FROM
   (
     SELECT
-      round,
+      id,
       timestamp,
       'Alchemy' AS provider,
       alchemy AS slot,
@@ -13,7 +13,7 @@ FROM
       rounds
     UNION ALL
     SELECT
-      round,
+      id,
       timestamp,
       'Ankr' AS provider,
       ankr AS slot,
@@ -22,7 +22,7 @@ FROM
       rounds
     UNION ALL
     SELECT
-      round,
+      id,
       timestamp,
       'Chainstack' AS provider,
       chainstack AS slot,
@@ -31,7 +31,7 @@ FROM
       rounds
     UNION ALL
     SELECT
-      round,
+      id,
       timestamp,
       'Pokt' AS provider,
       pokt AS slot,
@@ -40,7 +40,7 @@ FROM
       rounds
     UNION ALL
     SELECT
-      round,
+      id,
       timestamp,
       'QuickNode' AS provider,
       quicknode AS slot,
