@@ -24,13 +24,6 @@ const providers = {
   QuickNode: process.env.QUICKNODE_ENDPOINT,
 };
 
-const connections = Object.entries(providers).map(([name, endpoint]) => {
-  return {
-    name,
-    conn: new web3.Connection(endpoint),
-  };
-});
-
 async function sendToDb(timestamp, results, winners) {
   const pgClient = await pool.connect();
   await pgClient.query(
@@ -50,6 +43,14 @@ async function sendToDb(timestamp, results, winners) {
 
 async function checkProviderSlots() {
   const timestamp = new Date().toISOString();
+  const connections = await Object.entries(providers).map(
+    ([name, endpoint]) => {
+      return {
+        name,
+        conn: new web3.Connection(endpoint),
+      };
+    }
+  );
   try {
     const requests = connections.map(({ name, conn }) =>
       Promise.race([
