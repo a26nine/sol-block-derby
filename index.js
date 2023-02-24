@@ -59,7 +59,7 @@ async function checkProviderSlots() {
     console.log('\n');
 
     const pgClient = await pool.connect();
-    await client.query(
+    await pgClient.query(
       'INSERT INTO rounds (timestamp, alchemy, ankr, chainstack, pokt, quicknode, winners) VALUES ($1, $2, $3, $4, $5, $6, $7)',
       [
         timestamp,
@@ -71,6 +71,7 @@ async function checkProviderSlots() {
         winners.join(', '),
       ]
     );
+    console.log('Added to DB!');
     client.release();
   } catch (error) {
     // console.error(error);
