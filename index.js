@@ -2,7 +2,6 @@ require('dotenv').config();
 const { Pool } = require('pg');
 const web3 = require('@solana/web3.js');
 
-// Postgres DB connection
 const pool = new Pool({
   host: process.env.PGHOST,
   database: process.env.PGDATABASE,
@@ -11,7 +10,6 @@ const pool = new Pool({
   password: process.env.PGPASSWORD,
 });
 
-// Node providers
 const providers = {
   Alchemy: process.env.ALCHEMY_ENDPOINT,
   Ankr: process.env.ANKR_ENDPOINT,
@@ -20,7 +18,6 @@ const providers = {
   QuickNode: process.env.QUICKNODE_ENDPOINT,
 };
 
-// Establish connections
 const connections = Object.entries(providers).map(([name, endpoint]) => {
   return {
     name,
@@ -49,14 +46,14 @@ async function checkProviderSlots() {
     );
 
     const results = await Promise.all(requests);
-    console.log(timestamp);
+    console.log('New round at', timestamp);
     results.forEach(({ name, slot }) => console.log(`${name}: ${slot}`));
+    console.log('');
 
     const highestSlot = Math.max(...results.map((res) => res.slot));
     const winners = results
       .filter(({ slot }) => slot === highestSlot)
       .map(({ name }) => name);
-    console.log('\n');
 
     const pgClient = await pool.connect();
     await pgClient.query(
@@ -71,8 +68,7 @@ async function checkProviderSlots() {
         winners.join(', '),
       ]
     );
-    console.log('Added to DB!');
-    client.release();
+    pgClient.release();
   } catch (error) {
     // console.error(error);
   } finally {
@@ -80,4 +76,10 @@ async function checkProviderSlots() {
   }
 }
 
+console.log(
+  `
+  █▀ █▀█ █░░ ▄▀█ █▄░█ ▄▀█   █▄▄ █░░ █▀█ █▀▀ █▄▀   █▀▄ █▀▀ █▀█ █▄▄ █▄█  
+  ▄█ █▄█ █▄▄ █▀█ █░▀█ █▀█   █▄█ █▄▄ █▄█ █▄▄ █░█   █▄▀ ██▄ █▀▄ █▄█ ░█░ 
+  `
+);
 checkProviderSlots();
