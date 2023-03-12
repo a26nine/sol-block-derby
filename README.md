@@ -75,6 +75,6 @@ _If you are running the script from multiple servers/locations and want to have 
 
 ## Query Database
 
-You can run `winner.sql` query against the database to populate the winner.
+You can run Various SQL queries provided in `sql/queries` against the database.
 
 ![db-schema](assets/db-schema.png)
