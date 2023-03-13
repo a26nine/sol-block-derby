@@ -1,6 +1,6 @@
 # Solana Block Derby 🏇🏻
 
-A script to fetch Solana blockchain's latest slot number using various blockchain node providers, compare them, and compute the winner.
+A tool to fetch Solana blockchain's latest slot number using various blockchain node providers, compare them, and compute the winner for the purpose of data reliability.
 
 (Optional) The data can also be sent to a Posgtres DB for querying later.
 

@@ -51,4 +51,6 @@ FROM
 WHERE
   winners LIKE CONCAT('%', provider, '%')
 GROUP BY
-  provider;
+  provider
+ORDER BY
+  wins DESC;
